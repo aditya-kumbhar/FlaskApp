@@ -3,4 +3,4 @@
 >>> cursor = conn.cursor()   
 >>> cursor.execute("CREATE TABLE Users(uid TEXT,pass TEXT,uname TEXT,email TEXT,phone INTEGER,city TEXT);")
 <sqlite3.Cursor object at 0x039B7920>   
-hi
+
