@@ -1,14 +1,14 @@
-from flask import Flask, render_template,request,g,flash,redirect,url_for
+from flask import Flask, render_template,request,g,flash,redirect,url_for,jsonify
 import sqlite3
 
 #initialising app
 app = Flask(__name__)
 app.secret_key = 'some_secret'
+
 #connecting to DB before every request
 @app.before_request
 def before_request():
     g.db = sqlite3.connect('usersDB.db')
-
 
 #closing connection after every request
 @app.teardown_request
@@ -21,7 +21,6 @@ def teardown_request(exception):
 def index():
   return render_template('index.html')
 
-
 @app.route('/signup', methods=['GET', 'POST'])
 def test():
 	if(request.method=='POST'):
@@ -33,15 +32,23 @@ def test():
 		city = request.form['city']
 
 		li = g.db.execute("SELECT * from Users WHERE uid = ?;",[uid]).fetchall();
+
 		if(len(li)>0):
 			flash("User-id already exists!")
 			return redirect(url_for('index'))
+			# return jsonify(result='User-id already exists!')
 		else:
 			g.db.execute("INSERT INTO Users VALUES (?,?,?,?,?,?);", (uid,passw,name,email,phone,city))
 			g.db.commit()
+			flash("User-id already exists!")
+			return redirect(url_for('index'))
 
-			users = g.db.execute("SELECT * FROM Users;").fetchall()
-			return render_template('Userstable.html',users=users)
+@app.route('/examp')
+def dyn_txt():
+    str = 'hello123'
+    return jsonify(result='okokok')
 
+		
 if __name__ == '__main__':
-  app.run(debug=True)
+  app.run(debug=False)
+#host= '0.0.0.0', port=5000,
