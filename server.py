@@ -1,4 +1,4 @@
-from flask import Flask, render_template,request,g,flash,redirect,url_for,jsonify
+from flask import Flask, render_template,request,g,flash,redirect,url_for,jsonify,json
 import sqlite3
 
 #initialising app
@@ -34,15 +34,14 @@ def test():
 		li = g.db.execute("SELECT * from Users WHERE uid = ?;",[uid]).fetchall();
 
 		if(len(li)>0):
-			flash("User-id already exists!")
-			return redirect(url_for('index'))
-			# return jsonify(result='User-id already exists!')
+			return jsonify(result='User-id already exists! Please choose a different User-id.')
+
 		else:
 			g.db.execute("INSERT INTO Users VALUES (?,?,?,?,?,?);", (uid,passw,name,email,phone,city))
 			g.db.commit()
-			flash("User-id already exists!")
-			return redirect(url_for('index'))
-
+			return jsonify(result='Signup successful! Now login with your new User-id.')
+			
+			
 #clicking on Login
 @app.route('/login',methods=['GET', 'POST'])
 def login():
@@ -51,13 +50,22 @@ def login():
 		passw = request.form['pass']
 
 		li = g.db.execute("SELECT pass from Users WHERE uid = ?;",[uid]).fetchall();
-
+		
 		if(len(li)==0):
-			return jsonify(result="Invalid login id")
+			flash("Invalid User-id")
+			return redirect(url_for('index'))
+			# return jsonify(result="Invalid login id")
+		else:
+			if(str(passw)==str(li[0][0])):
+				return render_template('choice.html')
+			else:
+				flash("Incorrect password")
+				return redirect(url_for('index'))
+			
 
 
 #clicking on "manage your hall"
-@app.route('/mgHall')
+@app.route('/choice')
 def manageHall():
 	return render_template('choice.html')
 
@@ -69,5 +77,5 @@ def dyn_txt():
 
 		
 if __name__ == '__main__':
-  app.run(host= '0.0.0.0', port=5000)#,debug=False)
+  app.run(host= '0.0.0.0', port=5000, debug=True)
 #host= '0.0.0.0', port=5000,

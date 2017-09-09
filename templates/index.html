@@ -72,18 +72,35 @@
                 </div>
             </div>
                 
-            <form action="/login" id="registration-form" method="get">
+            <form action="/login" id="registration-form" method="post">
                 <div class="row">
                     <div class="col-md-12" id="registration-msg" style="display:none;">
                         <div class="alert"></div>
                     </div>
-                    <div class="col-sm-6">
 
-                        <div class="redtxt" id=myg name=myg >
-                            
-                        </div>
-                            
-                          
+                    <div class="col-sm-6">
+                         {% with messages = get_flashed_messages() %}
+                            {% if messages %}
+                                {% for message in messages %}
+                                <div class="alert alert-warning alert-dismissible" role="alert">
+                                    <div class="redtxt">
+                                        {{message}}
+
+                                        <style>
+                                        .redtxt
+                                        {
+                                        color:red;
+                                        height: 30px;
+                                        width: 250px;
+                                        }
+                                        </style>
+                                        <!--       <button type="button" data-dismiss="col-sm-6" aria-label="Close" ><span aria-hidden="true">×</span></button>
+                                        -->
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            {% endif %}
+                        {% endwith %}          
                         <div class="form-group">
                             <input type="text" class="form-control" placeholder="User-id" id="uid" name="uid" required>
                         </div>
@@ -94,36 +111,9 @@
                         <br>
                         <div class="form-group">
                            <!--  <button type="submit" class="btn btn-black " name="log-btn" id="log-btn">Logininin</button> -->
-                            <a class="btn btn-black " name="login-btn" id="login-btn">Login</a>
+                            <button type="submit" class="btn btn-black " name="login-btn" id="login-btn">Login</a>
                              </div>
                              <br>
-                        
-
-                            <script type=text/javascript>
-                          //  $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
-                            $('#login-btn').bind('click', function() {
-                            //$('#login-btn').click(function() {
-                            var user = $('#uid').val();
-                            var pass = $('#pass').val();
-                            
-                            $.ajax({
-                                url: '/login',
-                                data: $('form').serialize(),
-                                type: 'POST',
-                                success: function(response) {
-                                    $("#myg").text(JSON.stringify(response['result']).replace(/"+/g, "")); //replace double quotes with null
-                                },
-                                error: function(error) {
-                                    console.log(error);
-                                }
-                            });
-
-                            // $.getJSON($SCRIPT_ROOT + '/login', function(data) {   $("#myg").text(data.result); });
-                            // return false;
-                            });
-                            
-                            </script>
-
 
                              <div class="form-group">
                              <a class="btn btn-black" data-scroll href="#signup">Not a member?</a>
@@ -132,19 +122,11 @@
 
                         </div>
                         <style>
-                                    .redtxt
+                                    .coltxt
                                     {
-                                        color:red;
-                                        /*height: 10px;
-                                        width: 250px;
-                                        *//*line-height:50px;*/
+                                        color: #A52A2A
                                     }
                         </style>
-
-
-                        
-
-                
                 
             </form>
         </div>
@@ -159,7 +141,7 @@
                 </div>
             </div>
                 
-            <form action="/signup" id="registration-form" method="post">
+            <form action="/signup" id="signup-form" method="post">
                 <div class="row">
                     <div class="col-md-12" id="registration-msg" style="display:none;">
                         <div class="alert"></div>
@@ -197,38 +179,44 @@
 
                            <br>
                             
-                        <button type="submit" class="btn btn-black" name="signup-btn" id="signup-btn" data-scroll href="#login"> Sign Up</button>
+                        <a href="#signup-form" class="btn btn-black" name="signup-btn" id="signup-btn"> Sign Up</a>
+                         <script type=text/javascript>
+                          //  $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+                            $('#signup-btn').bind('click', function() {
+                            //$('#login-btn').click(function() {
+                            // var user = $('#uid').val();
+                            // var pass = $('#pass').val();
+                            
+                            $.ajax({
+                                url: '/signup',
+                                data: $('form').serialize(),
+                                type: 'POST',
+                                success: function(response) {
+                                
+                                    $("#myg").text(JSON.stringify(response['result']).replace(/"+/g, "")); //replace double quotes with null
+                                },
+                                error: function(error) {
+                                    console.log(error);
+                                }
+                            });
+
+                            // $.getJSON($SCRIPT_ROOT + '/login', function(data) {   $("#myg").text(data.result); });
+                            // return false;
+                            });
+                            
+                            </script>
+
+                        <br>
+                        <br>
+                        <div class="coltxt" id=myg name=myg>
+                           
                         </div>
+                        </div>
+
                     </div>
                                        
               
-                    <div class="col-sm-6" >
-                       
-                       {% with messages = get_flashed_messages() %}
-                          {% if messages %}
-                            {% for message in messages %}
-                              <div class="alert alert-warning alert-dismissible" role="alert">
-                                <div class="redtxt">
-                                    {{message}}
-                                
-                                <style>
-                                    .redtxt
-                                    {
-                                        color:red;
-                                        height: 30px;
-                                        width: 250px;
-                                    }
-                                </style>
-                        <!--       <button type="button" data-dismiss="col-sm-6" aria-label="Close" ><span aria-hidden="true">×</span></button>
- -->
-                                </div>
-                              </div>
-                            {% endfor %}
-                          {% endif %}
-                        {% endwith %}
-                        
-                    </div>
-
+                   
 
                     </div>
                     </div>
@@ -281,7 +269,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
-                    <p class="site-info">Designed and <br> Developed by Bharati Kulkarni</a></p>
+                    <p class="site-info">Designed and <br> Developed by Aditya, Bharati, Shantanu</a></p>
                     <ul class="social-block">
                         <li><a href=""><i class="ion-social-twitter"></i></a></li>
                         <li><a href=""><i class="ion-social-facebook"></i></a></li>
