@@ -43,6 +43,25 @@ def test():
 			flash("User-id already exists!")
 			return redirect(url_for('index'))
 
+#clicking on Login
+@app.route('/login',methods=['GET', 'POST'])
+def login():
+	if(request.method=='POST'):
+		uid = request.form['uid']
+		passw = request.form['pass']
+
+		li = g.db.execute("SELECT pass from Users WHERE uid = ?;",[uid]).fetchall();
+
+		if(len(li)==0):
+			return jsonify(result="Invalid login id")
+
+
+#clicking on "manage your hall"
+@app.route('/mgHall')
+def manageHall():
+	return render_template('choice.html')
+
+
 @app.route('/examp')
 def dyn_txt():
     str = 'hello123'
@@ -50,5 +69,5 @@ def dyn_txt():
 
 		
 if __name__ == '__main__':
-  app.run(debug=False)
+  app.run(host= '0.0.0.0', port=5000)#,debug=False)
 #host= '0.0.0.0', port=5000,

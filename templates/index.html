@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  
+    
     
     <title>Conference Room Booking System</title>
 
@@ -78,6 +78,12 @@
                         <div class="alert"></div>
                     </div>
                     <div class="col-sm-6">
+
+                        <div class="redtxt" id=myg name=myg >
+                            
+                        </div>
+                            
+                          
                         <div class="form-group">
                             <input type="text" class="form-control" placeholder="User-id" id="uid" name="uid" required>
                         </div>
@@ -85,16 +91,59 @@
                         <div class="form-group">
                             <input type="password" class="form-control" placeholder="Password" id="pass" name="pass" required>
                         </div>
-                     
-                        <div clas="form-group">
-                        <button type="submit" class="btn btn-black  " name="login-btn" id="login-btn">Login</button>
-                         </div>
-                         <br>
-                       
-                         <div clas="form-group">
-                         <a class="btn btn-black" data-scroll href="#signup">Not a member?</a>
-                         </div>
-                </div>
+                        <br>
+                        <div class="form-group">
+                           <!--  <button type="submit" class="btn btn-black " name="log-btn" id="log-btn">Logininin</button> -->
+                            <a class="btn btn-black " name="login-btn" id="login-btn">Login</a>
+                             </div>
+                             <br>
+                        
+
+                            <script type=text/javascript>
+                          //  $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+                            $('#login-btn').bind('click', function() {
+                            //$('#login-btn').click(function() {
+                            var user = $('#uid').val();
+                            var pass = $('#pass').val();
+                            
+                            $.ajax({
+                                url: '/login',
+                                data: $('form').serialize(),
+                                type: 'POST',
+                                success: function(response) {
+                                    $("#myg").text(JSON.stringify(response['result']).replace(/"+/g, "")); //replace double quotes with null
+                                },
+                                error: function(error) {
+                                    console.log(error);
+                                }
+                            });
+
+                            // $.getJSON($SCRIPT_ROOT + '/login', function(data) {   $("#myg").text(data.result); });
+                            // return false;
+                            });
+                            
+                            </script>
+
+
+                             <div class="form-group">
+                             <a class="btn btn-black" data-scroll href="#signup">Not a member?</a>
+                             </div>
+
+
+                        </div>
+                        <style>
+                                    .redtxt
+                                    {
+                                        color:red;
+                                        /*height: 10px;
+                                        width: 250px;
+                                        *//*line-height:50px;*/
+                                    }
+                        </style>
+
+
+                        
+
                 
                 
             </form>
@@ -106,7 +155,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
-                    <h3 class="section-title">Registration</h3>
+                    <h3 class="section-title">Sign Up</h3>
                 </div>
             </div>
                 
@@ -133,7 +182,7 @@
                         </div>
 
                         <div class="form-group">
-                            <input type="tel" pattern="[7-9]{1}[0-9]{9}" class="form-control" placeholder="Phone" id="cell" name="cell" required>
+                            <input type="tel" pattern="[7-9]{1}[0-9]{9}" class="form-control" placeholder="Mobile Number" id="cell" name="cell" required>
                         </div>
                   
 
@@ -148,13 +197,11 @@
 
                            <br>
                             
-                        <button type="submit" class="btn btn-black" name="signup-btn" id="signup-btn" data-scroll href="#login"> Submit</button>
+                        <button type="submit" class="btn btn-black" name="signup-btn" id="signup-btn" data-scroll href="#login"> Sign Up</button>
                         </div>
                     </div>
                                        
-              <!--       <div class="col-sm-6" id=myg name=myg >
-                        texthere
-                    </div> -->
+              
                     <div class="col-sm-6" >
                        
                        {% with messages = get_flashed_messages() %}
@@ -179,7 +226,7 @@
                             {% endfor %}
                           {% endif %}
                         {% endwith %}
-                        {% block body %}{% endblock %}
+                        
                     </div>
 
 
@@ -228,18 +275,7 @@
                 </div>
             </div>
     </section>
-<!-- 
-     <script type=text/javascript>
-     $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
-      $(function() {
-        $('#signup-btn').click(function() {
-          $.getJSON($SCRIPT_ROOT + '/signup', function(data) {   $("#myg").text(data.result); });
-          return false;
-        });
-      });
-    </script>
-    
-     -->
+
 
    <footer class="site-footer">
         <div class="container">
