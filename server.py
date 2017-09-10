@@ -21,6 +21,8 @@ def teardown_request(exception):
 def index():
   return render_template('index.html')
 
+
+
 @app.route('/signup', methods=['GET', 'POST'])
 def test():
 	if(request.method=='POST'):
@@ -50,6 +52,7 @@ def login():
 		passw = request.form['pass']
 
 		li = g.db.execute("SELECT pass from Users WHERE uid = ?;",[uid]).fetchall();
+		nm = g.db.execute("SELECT uname from Users WHERE uid = ?;",[uid]).fetchall();
 		
 		if(len(li)==0):
 			flash("Invalid User-id")
@@ -57,23 +60,16 @@ def login():
 			# return jsonify(result="Invalid login id")
 		else:
 			if(str(passw)==str(li[0][0])):
-				return render_template('choice.html')
+				return render_template('choice.html',data = str(nm[0][0]))
 			else:
 				flash("Incorrect password")
 				return redirect(url_for('index'))
 			
 
 
-#clicking on "manage your hall"
 @app.route('/choice')
 def manageHall():
-	return render_template('choice.html')
-
-
-@app.route('/examp')
-def dyn_txt():
-    str = 'hello123'
-    return jsonify(result='okokok')
+	return redirect(url_for('choice'))
 
 		
 if __name__ == '__main__':

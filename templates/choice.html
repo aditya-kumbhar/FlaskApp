@@ -1,22 +1,171 @@
 {% extends "layout.html" %}
 {% block body %}
+
+<body data-spy="scroll" data-target="#site-nav">
+    <nav id="site-nav" class="navbar navbar-fixed-top navbar-custom">
+        <div class="container">
+            <div class="navbar-header">
+
+                <!-- logo -->
+                <div class="site-branding">
+                    <a class="logo" href="#">
+                        
+                        <!-- logo image  -->
+                        <img src="../static/assets/images/logo.png" alt="Logo">
+                        Conference Room Booking System
+                    </a>
+                </div>
+
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-items" aria-expanded="false">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+
+            </div><!-- /.navbar-header -->
+
+
+            <div class="collapse navbar-collapse" id="navbar-items">
+                <ul class="nav navbar-nav navbar-right">
+
+                    <!-- navigation menu -->
+                    {% if data %}
+                    <li class = "active"><a href="#">{{data}}</a> </li>
+                    <li><a href="/">Log Out</a></li>
+                    {% else %}
+                    <li class = "active"><a href="/">Log In</a></li>
+                    {% endif %} 
+                    
+                    
+                
+                </ul>
+            </div>
+
+        </div><!-- /.container -->
+    </nav>
+
+    <script src="../static/bower_components/jquery/dist/jquery.min.js"></script>
+    <script src="../static/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="../static/bower_components/smooth-scroll/dist/js/smooth-scroll.min.js"></script>
+    <script src="../static/assets/js/main.js"> </script>
+
   <header id="site-header" class="site-header valign-center"> 
         <div class="intro">
 
             <h3>Looking for a place to host a conference?</h3>  
             <br> 
-            <a class="btn btn-white" id="book-btn" href="\bkhall">BOOK NOW</a>
-     		<br><br><br><br>
- 			
- 			<h3>Have a conference room to be advertised?</h3>  
+            <a class="btn btn-white" id="book-btn" data-scroll href="#hall-book">BOOK NOW</a>
+            <br><br><br><br>
+            
+            <h3>Have a conference room to be advertised?</h3>  
             <br> 
-     		<a class="btn btn-white" id="reghall-btn" href="\rghall">Register your conference room</a>
-     		<br>
-     		<br>
-     		<h3>Manage your registered room</h3>
-     		<a class="btn btn-white" id="mg-btn" href="\mgHall">Manage</a>
+            <a class="btn btn-white" id="reghall-btn" href="\rghall">Register your conference room</a>
+            <br>
+            <br>
+            <h3>Manage your registered room</h3>
+            <a class="btn btn-white" id="mg-btn" href="\mgHall">Manage</a>
         
         </div>
     </header>
+   
 
+    <section id="hall-book" class="section registration">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <h3 class="section-title">Find available halls</h3>
+                </div>
+            </div>
+                
+            
+                <div class="row">
+                    <div class="col-md-12" id="Booking-msg" style="display:none;">
+                        <div class="alert"></div>
+                    </div>
+                </div>
+
+                <div class="col-sm-6">
+                    <form action="/signup" id="search-hall-form" method="post">    
+                        <div class="form-group">
+                            <select class="form-control" name="hallcity" id="hallcity" required>
+                                <option readonly>City</option>
+                                <option>Pune</option>
+                                <option>Mumbai</option>
+                                <option>Banglore</option>
+                                <option>Delhi</option>
+                            </select>
+
+                        </div>
+                        <br>
+                       
+                        <h4 class=section-title>Choose Requirements</h4>
+
+                        <div class="form-group">
+                            <input type="text" class="form-control" placeholder="Number of seats" id="seats" name="seats" required>
+                            <br>
+                            <input type="checkbox" name="ac" value="ac" id="ac">
+                            <label for = "ac">AC</label>
+                            <br>
+                            <input type="checkbox" name="smart-board" value="smart-board" id="smart-board">
+                            <label for = "smart-board">Smart Board</label>
+                            <br>
+                            <input type="checkbox" name="projector" value="projector" id="projector">
+                            <label for = "projector">Projector</label>
+                        </div>
+                            
+                                
+                        <br>
+                        <br>
+
+                        <div class="form-group">
+                           <!--  <button type="submit" class="btn btn-black " name="log-btn" id="log-btn">Logininin</button> -->
+                            <a class="btn btn-black " name="search-btn" id="search-btn" href="search-btn">Search</a>
+
+                        </div>
+                        <script type=text/javascript>
+                          //  $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+                            $('#search-btn').bind('click', function() {
+                            
+                            
+                            $.ajax({
+                                url: '/searchHalls',
+                                data: $('form').serialize(),
+                                type: 'POST',
+                                success: function(response) {
+                                $('rooms-table').show(2000);
+                                    // $("#myg").text(JSON.stringify(response['result']).replace(/"+/g, "")); //replace double quotes with null
+                                },
+                                error: function(error) {
+                                    $('rooms-table').show(2000);
+                                    console.log(error);
+                                }
+                            });
+
+                    
+                            });
+                            
+                            </script>
+                    </form>
+                    <table name="rooms-table" class="form-group" hidden>
+                        <tr>
+                            <th>Location</th>
+                            <th>Area</th>
+                            <th>Seats</th>
+                            <th>AC</th>
+                    </table>
+                </div>
+                        <style>
+                                    .coltxt
+                                    {
+                                        color: #A52A2A
+                                    }
+                        </style>
+
+
+                
+           
+        
+    </section>
 {% endblock %}
+    
