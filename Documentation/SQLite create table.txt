@@ -3,3 +3,35 @@
 >>> cursor = conn.cursor()   
 >>> cursor.execute("CREATE TABLE Users(uid TEXT,pass TEXT,uname TEXT,email TEXT,phone INTEGER,city TEXT);")
 <sqlite3.Cursor object at 0x039B7920>
+>>> cur.execute('pragma table_info(Rooms)').fetchall() 
+[(0, 'r_id', 'TEXT', 0, None, 0), 
+(1, 'city', 'TEXT', 0, None, 0), 
+(2, 'r_name', 'TEXT', 0, None, 0),
+ (3, 'loc', 'TEXT', 0, None, 0), 
+(4, 'seats', 'INTEGER', 0, None, 0), 
+(5, 'ac', 'INTEGER', 0, None, 0), 
+(6, 'sb', 'INTEGER', 0, None, 0), 
+(7, 'prj', 'INTEGER', 0, None, 0)]           
+
+('p1', 'Pune', 'PCCOE Campus', 'Nigdi', 20, 0, 1, 1)                                                                    
+('p2', 'Pune', 'The Pride Hotel', 'Shivaji Nagar', 50, 1, 1, 1)                                                  
+('p3', 'Pune', 'Cygnus Hall', 'Bibewadi', 70, 1, 0, 0)                                                                  
+('p4', 'Pune', 'Oak', 'Vadgaon', 90, 0, 0, 0)                                                                           
+('p5', 'Pune', 'Oak', 'Vadgaon', 110, 1, 0, 0)                                                                         
+('p6', 'Mumbai', 'Latitude', 'Lower Parel', 110, 0, 0, 1)                                                               
+('p7', 'Mumbai', 'JSK', 'Koregaon West', 150, 0, 1, 0)                                                                  
+('p8', 'Mumbai', 'Sunville', 'Worli', 180, 1, 1, 0)                                                                   
+('p9', 'Mumbai', 'The Oberoi', 'Nariman Point', 90, 1, 0, 1)                                                            
+('p10', 'Mumbai', 'Peninsula', 'Andheri East', 120, 1, 1, 1)                                                            
+('p11', 'Mumbai', 'Renaissance', 'Powai', 180, 0, 1, 0)                                                                 
+('p12', 'Bangalore', 'Yolee', 'Pottery Road', 80, 1, 1, 0)                                                             
+('p13', 'Bangalore', 'Hyatt', 'Ulsur', 180, 1, 1, 1)                                                                    
+('p14', 'Bangalore', 'Adarsh Hamilton', 'Richmond Town', 60, 1, 1, 1)                                                   
+('p15', 'Bangalore', 'EBISU', 'Yelankha', 140, 1, 0, 0)                                                                 
+('p16', 'Bangalore', 'Sterlings', 'Kodihalli', 100, 1, 1, 1)                                                            
+('p17', 'Delhi', 'Conference Venue', 'New Delhi', 60, 1, 1, 0)                                                          
+('p18', 'Delhi', 'Metro', 'Karol Bagh', 140, 1, 1, 0)                                                                   
+('p19', 'Delhi', 'JRD Exotica', 'Safdarjung', 70, 1, 0, 1)                                                              
+('p20', 'Delhi', 'Legend Inn', 'East Of Kailash', 100, 1, 1, 1)                                                         
+('p21', 'Delhi', 'NMDC', 'Connaught Place', 110, 1, 0, 0)                                                               
+('p22', 'Delhi', 'Surya', 'Friends Place', 120, 1, 0, 1)

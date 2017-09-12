@@ -86,13 +86,13 @@
                 </div>
 
                 <div class="col-sm-6">
-                    <form action="/signup" id="search-hall-form" method="post">    
+                    <form id="search-hall-form" method="post">    
                         <div class="form-group">
-                            <select class="form-control" name="hallcity" id="hallcity" required>
+                            <select class="form-control" name="hallcity" id="hallcity">
                                 <option readonly>City</option>
                                 <option>Pune</option>
                                 <option>Mumbai</option>
-                                <option>Banglore</option>
+                                <option>Bangalore</option>
                                 <option>Delhi</option>
                             </select>
 
@@ -102,16 +102,19 @@
                         <h4 class=section-title>Choose Requirements</h4>
 
                         <div class="form-group">
-                            <input type="text" class="form-control" placeholder="Number of seats" id="seats" name="seats" required>
+                            <input type="text" class="form-control" placeholder="Number of seats" id="seats" name="seats" >
                             <br>
-                            <input type="checkbox" name="ac" value="ac" id="ac">
+                            <!-- <input type='hidden' value='0' name='ac' id='h_ac'>                         -->
+                            <input type="checkbox" name="ac" id="ac">
                             <label for = "ac">AC</label>
                             <br>
-                            <input type="checkbox" name="smart-board" value="smart-board" id="smart-board">
-                            <label for = "smart-board">Smart Board</label>
+                            <!-- <input type='hidden' value='0' name='h_sb'> -->
+                            <input type="checkbox" name="sb" id="sb" >
+                            <label for = "sb">Smart Board</label>
                             <br>
-                            <input type="checkbox" name="projector" value="projector" id="projector">
-                            <label for = "projector">Projector</label>
+                            <!-- <input type='hidden' value='0' name='h_pr'> -->
+                            <input type="checkbox" name="pr" id="pr" >
+                            <label for = "pr">Projector</label>
                         </div>
                             
                                 
@@ -120,24 +123,58 @@
 
                         <div class="form-group">
                            <!--  <button type="submit" class="btn btn-black " name="log-btn" id="log-btn">Logininin</button> -->
-                            <a class="btn btn-black " name="search-btn" id="search-btn" href="search-btn">Search</a>
+                            <a href="#search-btn" class="btn btn-black " name="search-btn" id="search-btn">Search</a>
 
                         </div>
                         <script type=text/javascript>
-                          //  $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+                          
                             $('#search-btn').bind('click', function() {
-                            
-                            
+
+                            $('#rooms-table').empty();
+                            var boxes = "";
+                            var mydiv = document.getElementById("dataDiv");
+                            //var tab = "#rooms-table"
+
+                            $.each($('form input[type=checkbox]')
+                                .filter(function(idx){
+                                    return $(this).prop('checked') === false
+                                }),
+                                function(idx, el){
+                                    // attach matched element names to the formData with a chosen value.
+                                    var emptyVal = "";
+                                    boxes += '&' + $(el).attr('name') + '=' + emptyVal;
+                                }
+                            );
                             $.ajax({
                                 url: '/searchHalls',
-                                data: $('form').serialize(),
+                                data: $('form').serialize()+boxes,
                                 type: 'POST',
                                 success: function(response) {
-                                $('rooms-table').show(2000);
+                                
+
+                                console.log(JSON.stringify(response['list'][0]))
+                                
+                                var tr = '<tr><th>Name</th><th>Location</th><th>Seats</th></tr>'
+                                $('#rooms-table').append(tr)
+                                for(i=0;i<response['list'].length;i++)
+                                {
+                                    
+                                    var tr = '<tr>' ;
+                                    tr += '<td> <a href = \'/booking\'>' + JSON.stringify(response['list'][i][0]).replace(/"+/g, "")  + '</a></td>';
+                                    tr += '<td>' + JSON.stringify(response['list'][i][1]).replace(/"+/g, "")+ '</td>';
+                                    tr += '<td>' + JSON.stringify(response['list'][i][2]).replace(/"+/g, "")+ '</td>';
+                                    tr +='</tr>';
+
+
+                                    $('#rooms-table').append(tr)
+                                }
+                                $('#rooms-table').show(1000);
+
+                                //$('rooms-table').show(1000);
                                     // $("#myg").text(JSON.stringify(response['result']).replace(/"+/g, "")); //replace double quotes with null
                                 },
                                 error: function(error) {
-                                    $('rooms-table').show(2000);
+                                    
                                     console.log(error);
                                 }
                             });
@@ -145,15 +182,12 @@
                     
                             });
                             
-                            </script>
+                        </script>
                     </form>
-                    <table name="rooms-table" class="form-group" hidden>
-                        <tr>
-                            <th>Location</th>
-                            <th>Area</th>
-                            <th>Seats</th>
-                            <th>AC</th>
+                    <table id='rooms-table' name = 'rooms-table' class="table" hidden>
+                        
                     </table>
+                   
                 </div>
                         <style>
                                     .coltxt

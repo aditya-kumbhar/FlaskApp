@@ -25,11 +25,10 @@
 
                 <!-- logo -->
                 <div class="site-branding">
-                    <a class="logo" href="/index">
+                    <a class="logo" href="#">
                         
                         <!-- logo image  -->
-                        <img src="../static/assets/images/logo.png" alt="Logo">
-                        
+                        <img src="../static/assets/images/logo.png" alt="Logo">            
                         Conference Room Booking System
                     </a>
                 </div>
@@ -63,9 +62,7 @@
 
             
             
-            <h1>Conference Room Booking System</h1>
-            
-            
+            <h1>Conference Room Booking System</h1>        
             
             <a class="btn btn-white" data-scroll href="#login">Log In</a>
         
@@ -192,9 +189,7 @@
                          <script type=text/javascript>
                           //  $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
                             $('#signup-btn').bind('click', function() {
-                            //$('#login-btn').click(function() {
-                            // var user = $('#uid').val();
-                            // var pass = $('#pass').val();
+                            
                             
                             $.ajax({
                                 url: '/signup',

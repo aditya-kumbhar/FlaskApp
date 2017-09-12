@@ -71,6 +71,43 @@ def login():
 def manageHall():
 	return redirect(url_for('choice'))
 
+@app.route('/searchHalls',methods=['POST'])
+def searchHalls():
+	if(request.method=='POST'):
+		
+		city = request.form['hallcity']
+		no_of_seats = (request.form['seats'])
+		
+		ac = request.form['ac']
+		sb = request.form['sb']
+		pr = request.form['pr']
+		a=1
+		s=1
+		p=1
+		li=[]
+
+		if(no_of_seats==''):
+			no_of_seats=0
+		else:
+			no_of_seats=int(no_of_seats)
+
+		if(ac==""):
+			a=0
+		if(sb==""):
+			s=0
+		if(pr==""):
+			p=0
+		
+
+		if(city=='City'):
+			li = g.db.execute("SELECT r_name,loc,seats from Rooms WHERE seats >= ? and ac = ? and sb = ? and prj = ?;",(no_of_seats,a,s,p)).fetchall()
+		else:
+			li = g.db.execute("SELECT r_name,loc,seats from Rooms WHERE city = ? and seats >= ? and ac = ? and sb = ? and prj = ?;",(city,no_of_seats,a,s,p)).fetchall()
+		
+		return jsonify(list=li)
+
+
+
 		
 if __name__ == '__main__':
   app.run(host= '0.0.0.0', port=5000, debug=True)
