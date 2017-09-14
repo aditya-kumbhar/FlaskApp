@@ -86,7 +86,10 @@
                 </div>
 
                 <div class="col-sm-6">
-                    <form id="search-hall-form" method="post">    
+                    <form id="search-hall-form" method="post">
+
+                       <input type="text" id="uid" name="uid" value= {{data}} hidden></input>
+                            
                         <div class="form-group">
                             <select class="form-control" name="hallcity" id="hallcity">
                                 <option readonly>City</option>
@@ -104,15 +107,14 @@
                         <div class="form-group">
                             <input type="text" class="form-control" placeholder="Number of seats" id="seats" name="seats" >
                             <br>
-                            <!-- <input type='hidden' value='0' name='ac' id='h_ac'>                         -->
                             <input type="checkbox" name="ac" id="ac">
                             <label for = "ac">AC</label>
                             <br>
-                            <!-- <input type='hidden' value='0' name='h_sb'> -->
+                         
                             <input type="checkbox" name="sb" id="sb" >
                             <label for = "sb">Smart Board</label>
                             <br>
-                            <!-- <input type='hidden' value='0' name='h_pr'> -->
+                           
                             <input type="checkbox" name="pr" id="pr" >
                             <label for = "pr">Projector</label>
                         </div>
@@ -160,18 +162,18 @@
                                 {
                                     
                                     var tr = '<tr>' ;
-                                    tr += '<td> <a href = \'/booking\'>' + JSON.stringify(response['list'][i][0]).replace(/"+/g, "")  + '</a></td>';
-                                    tr += '<td>' + JSON.stringify(response['list'][i][1]).replace(/"+/g, "")+ '</td>';
+                                    var roomId = JSON.stringify(response['list'][i][0]).replace(/"+/g, "")
+                                    tr += '<td> <a href = " {{"/calendar"}}" >' + JSON.stringify(response['list'][i][1]).replace(/"+/g, "")  + '</a></td>';
                                     tr += '<td>' + JSON.stringify(response['list'][i][2]).replace(/"+/g, "")+ '</td>';
+                                    tr += '<td>' + JSON.stringify(response['list'][i][3]).replace(/"+/g, "")+ '</td>';
                                     tr +='</tr>';
 
 
                                     $('#rooms-table').append(tr)
-                                }
+                                }   
+
                                 $('#rooms-table').show(1000);
 
-                                //$('rooms-table').show(1000);
-                                    // $("#myg").text(JSON.stringify(response['result']).replace(/"+/g, "")); //replace double quotes with null
                                 },
                                 error: function(error) {
                                     
@@ -184,7 +186,7 @@
                             
                         </script>
                     </form>
-                    <table id='rooms-table' name = 'rooms-table' class="table" hidden>
+                    <table id='rooms-table' name = 'rooms-table' class="table table-inverse table-striped" hidden>
                         
                     </table>
                    

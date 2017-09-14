@@ -1,4 +1,4 @@
-from flask import Flask, render_template,request,g,flash,redirect,url_for,jsonify,json
+from flask import Flask, render_template,request,g,flash,redirect,url_for,jsonify,json,session
 import sqlite3
 
 #initialising app
@@ -57,7 +57,7 @@ def login():
 		if(len(li)==0):
 			flash("Invalid User-id")
 			return redirect(url_for('index'))
-			# return jsonify(result="Invalid login id")
+			
 		else:
 			if(str(passw)==str(li[0][0])):
 				return render_template('choice.html',data = str(nm[0][0]))
@@ -69,7 +69,13 @@ def login():
 
 @app.route('/choice')
 def manageHall():
-	return redirect(url_for('choice'))
+	return render_template('choice.html')
+	
+@app.route('/calendar')
+def calendar():
+	uid = session.get('uid',None)
+	return render_template('calendar.html',uid=uid)
+
 
 @app.route('/searchHalls',methods=['POST'])
 def searchHalls():
@@ -77,7 +83,7 @@ def searchHalls():
 		
 		city = request.form['hallcity']
 		no_of_seats = (request.form['seats'])
-		
+		session['uid'] = request.form['uid']
 		ac = request.form['ac']
 		sb = request.form['sb']
 		pr = request.form['pr']
@@ -98,11 +104,10 @@ def searchHalls():
 		if(pr==""):
 			p=0
 		
-
 		if(city=='City'):
-			li = g.db.execute("SELECT r_name,loc,seats from Rooms WHERE seats >= ? and ac = ? and sb = ? and prj = ?;",(no_of_seats,a,s,p)).fetchall()
+			li = g.db.execute("SELECT r_id,r_name,loc,seats from Rooms WHERE seats >= ? and ac = ? and sb = ? and prj = ?;",(no_of_seats,a,s,p)).fetchall()
 		else:
-			li = g.db.execute("SELECT r_name,loc,seats from Rooms WHERE city = ? and seats >= ? and ac = ? and sb = ? and prj = ?;",(city,no_of_seats,a,s,p)).fetchall()
+			li = g.db.execute("SELECT r_id,r_name,loc,seats from Rooms WHERE city = ? and seats >= ? and ac = ? and sb = ? and prj = ?;",(city,no_of_seats,a,s,p)).fetchall()
 		
 		return jsonify(list=li)
 
