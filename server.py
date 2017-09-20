@@ -70,11 +70,15 @@ def login():
 @app.route('/choice')
 def manageHall():
 	return render_template('choice.html')
-	
-@app.route('/calendar')
+
+
+@app.route('/calendar',methods=["POST"])
 def calendar():
-	uid = session.get('uid',None)
-	return render_template('calendar.html',uid=uid)
+	if(request.method=="POST"):
+		uid = session.get('uid',None)
+		rid = request.form['click_rid']
+		print(rid)
+		return render_template('calendar.html',uid=uid)
 
 
 @app.route('/searchHalls',methods=['POST'])
