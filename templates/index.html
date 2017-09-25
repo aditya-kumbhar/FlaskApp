@@ -80,27 +80,6 @@
                     </div>
 
                     <div class="col-sm-6">
-                         {% with messages = get_flashed_messages() %}
-                            {% if messages %}
-                                {% for message in messages %}
-                                <div class="alert alert-warning alert-dismissible" role="alert">
-                                    <div class="redtxt">
-                                        {{message}}                 
-                                        <style>
-                                        .redtxt
-                                        {
-                                        color:red;
-                                        height: 30px;
-                                        width: 250px;
-                                        }
-                                        </style>
-                                        <!--       <button type="button" data-dismiss="col-sm-6" aria-label="Close" ><span aria-hidden="true">×</span></button>
-                                        -->
-                                    </div>
-                                </div>
-                                {% endfor %}
-                            {% endif %}
-                        {% endwith %}          
                         <div class="form-group">
                             <input type="text" class="form-control" placeholder="User-id" id="uid" name="uid" required>
                         </div>
@@ -118,6 +97,21 @@
                              <div class="form-group">
                              <a class="btn btn-black" data-scroll href="#signup">Not a member?</a>
                              </div>
+                        {% with messages = get_flashed_messages() %}
+                            {% if messages %}
+                                {% for message in messages %}
+                                <div class="alert alert-danger alert-dismissible">
+                                    {{message}}
+                                        <!--       <button type="button" data-dismiss="col-sm-6" aria-label="Close" ><span aria-hidden="true">×</span></button>
+                                        -->
+                                 <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                                    
+                                </div>
+                                   
+                                </div>
+                                {% endfor %}
+                            {% endif %}
+                        {% endwith %}          
 
 
                         </div>

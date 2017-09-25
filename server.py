@@ -1,5 +1,7 @@
 from flask import Flask, render_template,request,g,flash,redirect,url_for,jsonify,json,session
+from datetime import datetime,timedelta
 import sqlite3
+
 
 #initialising app
 app = Flask(__name__)
@@ -33,16 +35,19 @@ def test():
 		phone = request.form['cell']
 		city = request.form['city']
 
-		li = g.db.execute("SELECT * from Users WHERE uid = ?;",[uid]).fetchall();
-
-		if(len(li)>0):
-			return jsonify(result='User-id already exists! Please choose a different User-id.')
-
+		if(len(uid)==0 or len(passw)==0 or len(name)==0 or len(email)==0 or len(phone)==0 or city=='City'):
+			return jsonify(result = 'Please fill up all the fields')
 		else:
-			g.db.execute("INSERT INTO Users VALUES (?,?,?,?,?,?);", (uid,passw,name,email,phone,city))
-			g.db.commit()
-			return jsonify(result='Signup successful! Now login with your new User-id.')
-			
+
+			li = g.db.execute("SELECT * from Users WHERE uid = ?;",[uid]).fetchall();
+
+			if(len(li)>0):
+				return jsonify(result='User-id already exists! Please choose a different User-id.')
+			else:
+				g.db.execute("INSERT INTO Users VALUES (?,?,?,?,?,?);", (uid,passw,name,email,phone,city))
+				g.db.commit()
+				return jsonify(result='Signup successful! Now login with your new User-id.')
+				
 			
 #clicking on Login
 @app.route('/login',methods=['GET', 'POST'])
@@ -53,6 +58,8 @@ def login():
 
 		li = g.db.execute("SELECT pass from Users WHERE uid = ?;",[uid]).fetchall();
 		nm = g.db.execute("SELECT uname from Users WHERE uid = ?;",[uid]).fetchall();
+
+		
 		
 		if(len(li)==0):
 			flash("Invalid User-id")
@@ -60,6 +67,7 @@ def login():
 			
 		else:
 			if(str(passw)==str(li[0][0])):
+				session['uname'] = str(nm[0][0])
 				return render_template('choice.html',data = str(nm[0][0]))
 			else:
 				flash("Incorrect password")
@@ -69,7 +77,10 @@ def login():
 
 @app.route('/choice')
 def manageHall():
-	return render_template('choice.html')
+	if(session.get('uname',None)):
+		return render_template('choice.html',data = session.get('uname',None))
+	else:
+		return render_template('choice.html')
 
 
 @app.route('/calendar',methods=["POST"])
@@ -77,8 +88,20 @@ def calendar():
 	if(request.method=="POST"):
 		uid = session.get('uid',None)
 		rid = request.form['click_rid']
-		print(rid)
-		return render_template('calendar.html',uid=uid)
+		r_name = request.form['rname']
+		session['rname'] = r_name
+		session['rid'] = rid
+		li = g.db.execute('SELECT e_name,b_date,days from Bookings where r_id = ?',[rid])
+		days=[]
+		for day in li:
+			dt = datetime.strptime(day[1],'%Y-%m-%d')
+			ndays = day[2]-1
+			dt_next = dt + timedelta(days = ndays)
+			days.append([day[0],dt,dt_next])
+
+		session['days'] = days
+		# days = ['TEST','2017-09-25','2017-09-27']
+		return render_template('calendar.html',data=days,hallname=r_name)
 
 
 @app.route('/searchHalls',methods=['POST'])
@@ -116,8 +139,86 @@ def searchHalls():
 		return jsonify(list=li)
 
 
+@app.route('/bookHall',methods=['POST'])
+def bookHall():
+	if(request.method=='POST'):
+		d = datetime.today()
 
-		
+		nofdays = (int)(request.form['nofdays'])
+		e_name = request.form['eventName']
+		date = request.form['book-date']	#2017-09-24
+		bk_day = (int)(date[8:])
+		bk_mon = (int)(date[5:7])
+		bk_year = (int)(date[:4])
+
+		req_date = datetime.strptime(date, '%Y-%m-%d')
+
+		uid = session.get('uid',None)
+		rid = session.get('rid',None)
+		r_name =session.get('rname',None)
+		days = session.get('days',None)
+
+		if((d.year,d.month,d.day)<=(bk_year,bk_mon,bk_day)):
+			if(nofdays<=0):
+				flash('Number of days cannot be negative or 0')
+				return render_template('calendar.html',data=days,hallname=r_name)
+			elif(nofdays>15):
+				flash('Number of days limit exceeded! Maximum allowed is 15 days')
+				return render_template('calendar.html',data=days,hallname=r_name)
+			else:
+				li = g.db.execute('SELECT b_date,days from Bookings where r_id = ?;',[rid]).fetchall()
+				if(len(li)==0):
+					try:
+						g.db.execute('INSERT into Bookings VALUES (?,?,?,?,?)',(rid,uid,e_name,date,nofdays))
+						g.db.commit()
+						flash('Booking successful!')
+						dt = datetime.strptime(date,'%Y-%m-%d')
+						ndays = nofdays-1
+						dt_next = dt + timedelta(days = ndays)
+						days.append([e_name,dt,dt_next])
+						session['days'] = days
+
+					except sqlite3.Error as e:
+						flash('Something went wrong..{0}'.format(e))
+						return render_template('calendar.html',data=days,hallname=r_name)
+				else:
+					flag=0
+					for x in li:
+						dt = x[0]
+						dt = datetime.strptime(dt,'%Y-%m-%d')
+						ndays = x[1]
+						dt_next = dt + timedelta(days = ndays-1)
+						d1 = (dt.year,dt.month,dt.day)
+						
+						d3 = (dt_next.year,dt_next.month,dt_next.day)
+						print(x)
+						for k in range(nofdays):
+							req_date_nxt = req_date + timedelta(days = k)
+							print(req_date_nxt)
+							d2 = (req_date_nxt.year,req_date_nxt.month,req_date_nxt.day)
+							if(d1<=d2<=d3):
+								flash('Sorry, requested dates are not available.')
+								flag=1
+								break
+						if(flag==1):
+							break
+					else:
+						g.db.execute('INSERT into Bookings VALUES (?,?,?,?,?)',(rid,uid,e_name,date,nofdays))
+						g.db.commit()
+						flash('Booking successful!')
+
+						dt = datetime.strptime(date,'%Y-%m-%d')
+						ndays = nofdays-1
+						dt_next = dt + timedelta(days = ndays)
+						days.append([e_name,dt,dt_next])
+						session['days'] = days
+
+				return render_template('calendar.html',data=days,hallname=r_name)
+		else:
+			flash('Invalid booking date: Cannot book a past date.')
+			return render_template('calendar.html',data=days,hallname=r_name)
+
+
 if __name__ == '__main__':
-  app.run(host= '0.0.0.0', port=5000, debug=True)
+  app.run(host= '0.0.0.0', port=4555, debug=True)
 #host= '0.0.0.0', port=5000,
