@@ -57,7 +57,7 @@
             <br> 
             <a class="btn btn-white" id="book-btn" data-scroll href="#hall-book">BOOK NOW</a>
             <br><br><br><br>
-            
+          <!--   
             <h3>Have a conference room to be advertised?</h3>  
             <br> 
             <a class="btn btn-white" id="reghall-btn" href="\rghall">Register your conference room</a>
@@ -65,7 +65,7 @@
             <br>
             <h3>Manage your registered room</h3>
             <a class="btn btn-white" id="mg-btn" href="\mgHall">Manage</a>
-        
+         -->
         </div>
     </header>
    
@@ -156,7 +156,7 @@
 
                                 console.log(JSON.stringify(response['list'][0]))
                                 
-                                var tr = '<tr><th>Name</th><th>Location</th><th>Seats</th></tr>'
+                                var tr = '<tr><th>Name</th><th>City</th><th>Location</th><th>Seats</th></tr>'
                                 $('#rooms-table').append(tr)
                                 for ( i=0; i<response['list'].length; i++)
                                 {
@@ -166,9 +166,10 @@
                                     var roomName = JSON.stringify(response['list'][i][1]).replace(/"+/g, "");
 
                                     tr += '<td><form id="send" method="post" action="/calendar"><input id="click_rid" name="click_rid" value="'+roomId+'" hidden/><input id="rname" name="rname" value="'+roomName+'" hidden/><button type = submit>'+ roomName + '</button></form></td>';
-
+                                    tr += '<td>' + JSON.stringify(response['list'][i][4]).replace(/"+/g, "")+ '</td>';
                                     tr += '<td>' + JSON.stringify(response['list'][i][2]).replace(/"+/g, "")+ '</td>';
                                     tr += '<td>' + JSON.stringify(response['list'][i][3]).replace(/"+/g, "")+ '</td>';
+                                    
                                     tr +='</tr>';
 
                                     

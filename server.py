@@ -21,7 +21,9 @@ def teardown_request(exception):
 
 @app.route('/')
 def index():
-  return render_template('index.html')
+	li = g.db.execute("SELECT city,e_name,b_date from Bookings,Rooms where Bookings.r_id = Rooms.r_id order by b_date asc;").fetchall();
+
+	return render_template('index.html',data=li)
 
 
 
@@ -132,9 +134,9 @@ def searchHalls():
 			p=0
 		
 		if(city=='City'):
-			li = g.db.execute("SELECT r_id,r_name,loc,seats from Rooms WHERE seats >= ? and ac = ? and sb = ? and prj = ?;",(no_of_seats,a,s,p)).fetchall()
+			li = g.db.execute("SELECT r_id,r_name,loc,seats,city from Rooms WHERE seats >= ? and ac = ? and sb = ? and prj = ?;",(no_of_seats,a,s,p)).fetchall()
 		else:
-			li = g.db.execute("SELECT r_id,r_name,loc,seats from Rooms WHERE city = ? and seats >= ? and ac = ? and sb = ? and prj = ?;",(city,no_of_seats,a,s,p)).fetchall()
+			li = g.db.execute("SELECT r_id,r_name,loc,seats,city from Rooms WHERE city = ? and seats >= ? and ac = ? and sb = ? and prj = ?;",(city,no_of_seats,a,s,p)).fetchall()
 		
 		return jsonify(list=li)
 
