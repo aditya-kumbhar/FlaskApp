@@ -89,31 +89,24 @@
                         </div>
                         <br>
                         <div class="form-group">
-                           <!--  <button type="submit" class="btn btn-black " name="log-btn" id="log-btn">Logininin</button> -->
                             <button type="submit" class="btn btn-black " name="login-btn" id="login-btn">Login</a>
-                             </div>
+                        </div>
                              <br>
 
                              <div class="form-group">
                              <a class="btn btn-black" data-scroll href="#signup">Not a member?</a>
                              </div>
-                        {% with messages = get_flashed_messages() %}
-                            {% if messages %}
-                                {% for message in messages %}
-                                <div class="alert alert-danger alert-dismissible">
-                                    {{message}}
-                                        <!--       <button type="button" data-dismiss="col-sm-6" aria-label="Close" ><span aria-hidden="true">×</span></button>
-                                        -->
-                                 <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                                    
+                            {% with messages = get_flashed_messages() %}
+                                {% if messages %}
+                                    {% for message in messages %}
+                                       <div class="alert alert-danger alert-dismissible">
+                                        {{message}}
+                                         <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                                        </div>
                                 </div>
-                                   
-                                </div>
-                                {% endfor %}
-                            {% endif %}
-                        {% endwith %}          
-
-
+                                    {% endfor %}
+                                {% endif %}
+                            {% endwith %}          
                         </div>
                         <style>
                                     .coltxt
@@ -121,13 +114,11 @@
                                         color: #A52A2A
                                     }
                         </style>
-                
             </form>
         </div>
     </section>
 
-
-    <section id="signup" class="section registration">
+<section id="signup" class="section registration">
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
@@ -175,45 +166,58 @@
                             
                         <a href="#signup-form" class="btn btn-black" name="signup-btn" id="signup-btn"> Sign Up</a>
                          <script type=text/javascript>
-                          //  $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
-                            $('#signup-btn').bind('click', function() {
-                            
-                            
-                            $.ajax({
-                                url: '/signup',
-                                data: $('form').serialize(),
-                                type: 'POST',
-                                success: function(response) {
+                            var fla=0
+                            function validate() {
+                              $("#myg").text("");
+
+                              var email = $("#email").val();
+                              if (document.getElementById("email").checkValidity()) {
                                 
-                                    $("#myg").text(JSON.stringify(response['result']).replace(/"+/g, "")); //replace double quotes with null
-                                },
-                                error: function(error) {
-                                    console.log(error);
+                                if (document.getElementById("cell").checkValidity()) {
+                                    
                                 }
-                            });
-
-                            // $.getJSON($SCRIPT_ROOT + '/login', function(data) {   $("#myg").text(data.result); });
-                            // return false;
-                            });
+                                else {
+                                    $("#myg").text("Mobile Number is not valid");
+                                    fla=1
+                                }
+                                
+                              } else {
+                                $("#myg").text("Email id is not valid");
+                                fla=1
+                              }
+                              return false;
+                            }
+                            //$("#signup-btn").bind("click", validate);
                             
+                                $('#signup-btn').bind('click', function() {
+                                    fla=0           //for every click on signup,checking should be done.
+                                  validate();   
+                                  if(fla==0)
+                                    {                   
+                                        $.ajax({
+                                            url: '/signup',
+                                            data: $('form').serialize(),
+                                            type: 'POST',
+                                            success: function(response) {
+                                            
+                                                $("#myg").text(JSON.stringify(response['result']).replace(/"+/g, "")); //replace double quotes with null
+                                            },
+                                            error: function(error) {
+                                                console.log(error);
+                                            }
+                                        });
+                                    }
+                            });
                             </script>
-
                         <br>
                         <br>
                         <div class="coltxt" id=myg name=myg>
-                           
                         </div>
                         </div>
-
                     </div>
-                                       
-              
-                   
-
                     </div>
                     </div>
                 </div>
-                
             </form>
         </div>
     </section>
@@ -271,18 +275,14 @@
                 <div class="col-md-12">
                     <p class="site-info">Designed and <br> Developed by Aditya, Bharati, Shantanu</a></p>
                     <ul class="social-block">
-                        <li><a href=""><i class="ion-social-twitter"></i></a></li>
-                        <li><a href=""><i class="ion-social-facebook"></i></a></li>
-                        <li><a href=""><i class="ion-social-linkedin-outline"></i></a></li>
-                        <li><a href=""><i class="ion-social-googleplus"></i></a></li>
+                        <li><a href="www.twitter.com"><i class="ion-social-twitter"></i></a></li>
+                        <li><a href="www.facebook.com"><i class="ion-social-facebook"></i></a></li>
+                        <li><a href="www.linkedin.com"><i class="ion-social-linkedin-outline"></i></a></li>
+                        <li><a href="www.googleplus.com"><i class="ion-social-googleplus"></i></a></li>
                     </ul>
                 </div>
             </div>
         </div>
     </footer>
-
-   
-    <!-- script -->
-    
 </body>
 </html>

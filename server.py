@@ -7,6 +7,12 @@ import sqlite3
 app = Flask(__name__)
 app.secret_key = 'some_secret'
 
+
+@app.route('/')
+def index():
+	li = g.db.execute("SELECT city,e_name,b_date from Bookings,Rooms where Bookings.r_id = Rooms.r_id order by b_date asc;").fetchall();
+	return render_template('index.html',data=li)
+
 #connecting to DB before every request
 @app.before_request
 def before_request():
@@ -17,14 +23,6 @@ def before_request():
 def teardown_request(exception):
     if hasattr(g, 'db'):
         g.db.close()
-
-
-@app.route('/')
-def index():
-	li = g.db.execute("SELECT city,e_name,b_date from Bookings,Rooms where Bookings.r_id = Rooms.r_id order by b_date asc;").fetchall();
-
-	return render_template('index.html',data=li)
-
 
 
 @app.route('/signup', methods=['GET', 'POST'])
@@ -40,7 +38,6 @@ def test():
 		if(len(uid)==0 or len(passw)==0 or len(name)==0 or len(email)==0 or len(phone)==0 or city=='City'):
 			return jsonify(result = 'Please fill up all the fields')
 		else:
-
 			li = g.db.execute("SELECT * from Users WHERE uid = ?;",[uid]).fetchall();
 
 			if(len(li)>0):
@@ -175,7 +172,7 @@ def bookHall():
 						g.db.commit()
 						flash('Booking successful!')
 						dt = datetime.strptime(date,'%Y-%m-%d')
-						ndays = nofdays-1
+						ndays = nofdays
 						dt_next = dt + timedelta(days = ndays)
 						days.append([e_name,dt,dt_next])
 						session['days'] = days
@@ -210,7 +207,7 @@ def bookHall():
 						flash('Booking successful!')
 
 						dt = datetime.strptime(date,'%Y-%m-%d')
-						ndays = nofdays-1
+						ndays = nofdays
 						dt_next = dt + timedelta(days = ndays)
 						days.append([e_name,dt,dt_next])
 						session['days'] = days
@@ -222,5 +219,5 @@ def bookHall():
 
 
 if __name__ == '__main__':
-  app.run(host= '0.0.0.0', port=4555, debug=True)
+  app.run(host= '0.0.0.0', port=5000, debug=True)
 #host= '0.0.0.0', port=5000,
