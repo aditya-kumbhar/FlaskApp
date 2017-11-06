@@ -95,7 +95,7 @@
                         <h4 class=section-title>Choose Requirements</h4>
 
                         <div class="form-group">
-                            <input type="text" class="form-control" placeholder="Number of seats" id="seats" name="seats" >
+                            <input type="number" min="0" class="form-control" placeholder="Number of seats" id="seats" name="seats" >
                             <br>
                             <input type="checkbox" name="ac" id="ac">
                             <label for = "ac">AC</label>
@@ -141,9 +141,6 @@
                                 data: $('form').serialize()+boxes,
                                 type: 'POST',
                                 success: function(response) {
-                                
-
-                                console.log(JSON.stringify(response['list'][0]))
                                 
                                 var tr = '<tr><th>Name</th><th>City</th><th>Location</th><th>Seats</th></tr>'
                                 $('#rooms-table').append(tr)

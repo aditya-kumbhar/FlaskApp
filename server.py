@@ -10,7 +10,7 @@ app.secret_key = 'some_secret'
 
 @app.route('/')
 def index():
-	li = g.db.execute("SELECT city,e_name,b_date from Bookings,Rooms where Bookings.r_id = Rooms.r_id order by b_date asc;").fetchall();
+	li = g.db.execute("SELECT city,e_name,b_date from Bookings,Rooms where Bookings.r_id = Rooms.r_id and b_date>=date('now') order by b_date asc;").fetchall();
 	return render_template('index.html',data=li)
 
 #connecting to DB before every request
@@ -58,8 +58,6 @@ def login():
 		li = g.db.execute("SELECT pass from Users WHERE uid = ?;",[uid]).fetchall();
 		nm = g.db.execute("SELECT uname from Users WHERE uid = ?;",[uid]).fetchall();
 
-		
-		
 		if(len(li)==0):
 			flash("Invalid User-id")
 			return redirect(url_for('index'))
@@ -72,8 +70,6 @@ def login():
 				flash("Incorrect password")
 				return redirect(url_for('index'))
 			
-
-
 @app.route('/choice')
 def manageHall():
 	if(session.get('uname',None)):
@@ -94,7 +90,7 @@ def calendar():
 		days=[]
 		for day in li:
 			dt = datetime.strptime(day[1],'%Y-%m-%d')
-			ndays = day[2]-1
+			ndays = day[2]
 			dt_next = dt + timedelta(days = ndays)
 			days.append([day[0],dt,dt_next])
 
@@ -106,9 +102,8 @@ def calendar():
 @app.route('/searchHalls',methods=['POST'])
 def searchHalls():
 	if(request.method=='POST'):
-		
 		city = request.form['hallcity']
-		no_of_seats = (request.form['seats'])
+		no_of_seats = request.form['seats']
 		session['uid'] = request.form['uid']
 		ac = request.form['ac']
 		sb = request.form['sb']
@@ -121,8 +116,10 @@ def searchHalls():
 		if(no_of_seats==''):
 			no_of_seats=0
 		else:
-			no_of_seats=int(no_of_seats)
-
+			try:
+				no_of_seats=int(no_of_seats)
+			except exception as e:
+				flash("Invalid no. of seats")
 		if(ac==""):
 			a=0
 		if(sb==""):

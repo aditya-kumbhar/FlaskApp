@@ -61,7 +61,6 @@ and open the template in the editor.
             events: [
       
             {% if "{{data}}" %}
-            
                 {% for day in data %}
                     {
                     title: "{{day[0]}}",
@@ -162,7 +161,7 @@ and open the template in the editor.
                     <br>
                     <br>
                     Number of Days:
-                    <input type = "number" value ="1" id="nofdays" name="nofdays" style="margin-left: 10px" required/>
+                    <input type = "number" min="1" value ="1" id="nofdays" name="nofdays" style="margin-left: 10px" required/>
                     <br>
                     <br>
                     <br>
